@@ -1,5 +1,5 @@
 variable "resource_group_name" {
-  default = "rgmiguel"
+  default = "miguel-rg"
 }
 
 variable "location" {
@@ -11,7 +11,7 @@ variable "location" {
 variable "registry_name" {
   type        = string
   description = "Nombre del registry de imágenes de contenedor"
-  default     = "acrmiguel"
+  default     = "miguel-acr"
 }
 
 variable "registry_sku" {
@@ -41,7 +41,7 @@ variable "public_key_path" {
 variable "ssh_user" {
   type        = string
   description = "Usuario para hacer ssh"
-  default     = "miguelcontenedor"
+  default     = "casopractico2"
 }
 
 variable "azurerm_kubernetes_cluster"{
