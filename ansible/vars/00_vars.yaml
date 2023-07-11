@@ -1,0 +1,8 @@
+playbookname: 'First playbook'
+zone: 'Europe/Madrid'
+rpms1: 'httpd-tools' 
+rpms2: 'podman' 
+rpms3: 'skopeo'
+rpms4: 'openssl'
+path: 'webserver'
+mensaje: 'Este es el mensaje que imprime Ansible'

@@ -1,5 +1,5 @@
 variable "resource_group_name" {
-  default = "miguel-rg"
+  default = "practica2rg"
 }
 
 variable "location" {
@@ -11,7 +11,7 @@ variable "location" {
 variable "registry_name" {
   type        = string
   description = "Nombre del registry de imágenes de contenedor"
-  default     = "miguel-acr"
+  default     = "practica2acr"
 }
 
 variable "registry_sku" {

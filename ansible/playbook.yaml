@@ -1,0 +1,25 @@
+---
+- name: "{{playbookname}}"
+  hosts: webservers
+  remote_user: miguelcontenedor
+  become: true
+  #vars:
+    #  ansible_python_interpreter: /usr/lib/python
+  vars_files:
+    - vars/00_vars.yaml
+#  roles:
+#    - role_01
+  tasks:
+
+#    - name: declaro python3
+#      ansible_python_interpreter: /usr/local/bin/python3
+      
+
+    - name: Add a user to a password file and ensure permissions are set
+      community.general.htpasswd:
+        path: "{{path}}/.creds"
+        name: miguel
+        password: oedu2eGh
+        crypt_scheme: md5_crypt
+        ansible_python_interpreter: /usr/local/bin/python3
+        

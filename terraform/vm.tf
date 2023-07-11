@@ -65,6 +65,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "centos-8-stream-free"
     version   = "22.03.28"
   }
+  custom_data = filebase64("scripts/config.sh")
 }
 
 resource "azurerm_network_security_group" "nsg1" {
