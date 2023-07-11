@@ -26,20 +26,20 @@ version 0.0.1
     creo el fichero de credenciales .creds
 
     # generacion del certificado autofirmado
-        creo clave privada para el certificado
-        creo la peticion de firma del certificado
-        creo certificado utilizando la clave privada y la peticion firmada
-        defino la pagina principal del servidor
-        definir la configuración del servidor web
-        establecer la configuración de autenticación básica
-        Definir el fichero para la creación de la imagen del contenedor
-        Generar la imagen del contenedor
-        Etiquetar la imagen del contenedor
+        *creo clave privada para el certificado
+        *creo la peticion de firma del certificado
+        *creo certificado utilizando la clave privada y la peticion firmada
+        *defino la pagina principal del servidor
+        *definir la configuración del servidor web
+        *establecer la configuración de autenticación básica
+        *Definir el fichero para la creación de la imagen del contenedor
+        *Generar la imagen del contenedor
+        *Etiquetar la imagen del contenedor
         
         # Subir la imagen del contenedor al registry
-            Autenticarse en el Registry
-            Subir la imagen del contenedor al Registry
-            Crear el contenedor del servicio Web a partir de la imagen creada en el paso anterior
+            *Autenticarse en el Registry
+            *Subir la imagen del contenedor al Registry
+            *Crear el contenedor del servicio Web a partir de la imagen creada en el paso anterior
             Generar los ficheros para gestionar el contenedor a través de systemd
             Copiar los ficheros generados en el paso previo al directorio de systemd
             Recargar la configuración de systemd
