@@ -1,11 +1,11 @@
 ---
 - name: "{{playbookname}}"
-  hosts: webservers
-  remote_user: "{{remote_user}}"
+  hosts: "{{host}}"
+  remote_user: "{{ssh_user.value}}"
   become: true
   vars_files:
     - vars/00_vars.yaml
-
+    - vars/outputs.json
   tasks:
 
     - name: 'instalo httpd'
@@ -25,6 +25,6 @@
 
     - name: Instalar passlib en el host remoto
       pip:
-        name: passlib
+        name: "{{ rpms5 }}"
         state: present
       become: true

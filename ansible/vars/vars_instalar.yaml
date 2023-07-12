@@ -1,8 +1,11 @@
 playbookname: 'playbook instala aplicaciones en vm'
+host: 'webservers'
 zone: 'Europe/Madrid'
 rpms1: 'httpd-tools' 
 rpms2: 'podman' 
 rpms3: 'skopeo'
 rpms4: 'openssl'
+rpms5: 'passlib'
 path: 'webserver'
+
 
