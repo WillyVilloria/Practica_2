@@ -1,0 +1,30 @@
+---
+- name: "{{playbookname}}"
+  hosts: terraform_host
+  gather_facts: false
+  vars_files: 
+    - vars/outputs.json
+  tasks:
+
+    - name: Ejecutar Terraform
+      command: terraform output -json
+      args:
+        chdir: /home/miguel/Documentos/Proyectos/devops_ejercicios/ejercicio_ansible_podman/terraform
+
+      register: terraform_output
+
+    - name: Crear archivo de outputs json
+      copy:
+        content: "{{ terraform_output.stdout | from_json | to_nice_json }}"
+        dest: vars/outputs.json
+    
+    - name: Crear archivo de outputs yaml
+      copy:
+        content: "{{ terraform_output.stdout | from_yaml | to_nice_yaml }}"
+        dest: vars/outputs.yaml
+
+    - name: leer una variable de output
+      ansible.builtin.file:
+        path: "{{acr_admin_user.value}}"
+        state: directory
+        mode: '0755'

@@ -1,0 +1,39 @@
+---
+- name: "{{playbookname}}"
+  hosts: webservers
+  remote_user: miguelcontenedor
+  become: true
+  vars_files:
+    - vars/00_vars.yaml
+
+  tasks:
+
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: "{{path}}"
+        state: directory
+        mode: '0755'
+
+    - name: Crear archivo htpasswd
+      community.general.htpasswd:
+        name: miguel
+        password: nopass
+        path: "{{path}}/.creds"
+
+    - name: Generate an OpenSSL private key with a different size (2048 bits)
+      community.crypto.openssl_privatekey:
+          path: "{{path}}/localhost.key"
+          size: 2048
+
+    - name: Generate an OpenSSL Certificate Signing Request
+      community.crypto.openssl_csr:
+        path: "{{path}}/localhost.csr"
+        privatekey_path: "{{path}}/localhost.key"
+        common_name: www.ansible.com
+
+    - name: Generate a Self Signed OpenSSL certificate
+      community.crypto.x509_certificate:
+        path: "{{path}}/localhost.crt"
+        privatekey_path: "{{path}}/localhost.key"
+        csr_path: "{{path}}/localhost.csr"
+        provider: selfsigned

@@ -1,0 +1,33 @@
+---
+- name: "{{playbookname}}"
+  hosts: webservers
+  remote_user: miguelcontenedor
+  become: true
+  vars_files:
+    - vars/00_vars.yaml
+
+  tasks:
+
+    - name: Copy file index.html
+      ansible.builtin.copy:
+        src: files/index.html
+        dest: "{{path}}/index.html"
+        mode: '0644'
+
+    - name: Copy file ansible/files/.htaccess
+      ansible.builtin.copy:
+        src: files/.htaccess
+        dest: "{{path}}/.htaccess"
+        mode: '0644'
+    
+    - name: Copy file ansible/files/httpd.conf
+      ansible.builtin.copy:
+        src: files/httpd.conf
+        dest: "{{path}}/httpd.conf"
+        mode: '0644'
+
+    - name: Copy file ansible/files/Containerfile
+      ansible.builtin.copy:
+        src: files/Containerfile
+        dest: "{{path}}/Containerfile"
+        mode: '0644'

@@ -1,0 +1,30 @@
+---
+- name: "{{playbookname}}"
+  hosts: webservers
+  remote_user: miguelcontenedor
+  become: true
+  vars_files:
+    - vars/00_vars.yaml
+
+  tasks:
+
+    - name: 'instalo httpd'
+      yum:
+        name: "{{ rpms1 }}"
+        state: latest
+    
+    - name: 'instalo podman'
+      yum:
+        name: "{{ rpms2 }}"
+        state: latest
+
+    - name: 'instalo openssl'
+      yum:
+        name: "{{ rpms4 }}"
+        state: latest
+
+    - name: Instalar passlib en el host remoto
+      pip:
+        name: passlib
+        state: present
+      become: true
