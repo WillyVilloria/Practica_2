@@ -1,11 +1,11 @@
 ---
 - name: "{{playbookname}}"
   hosts: webservers
-  remote_user: "{{remote_user}}"
+  remote_user: "{{ssh_user.value}}"
   become: true
   vars_files:
-    - vars/00_vars.yaml
-
+    - vars/vars_images.yaml
+    - vars/outputs.json
   tasks:
 
     - name: Build a basic OCI image
@@ -16,11 +16,11 @@
     - containers.podman.podman_tag:
         image: "localhost/{{podman_name}}:latest"
         target_names:
-          - "{{acr_login_server.value}}{{podman_name}}:casopractico2"
+          - "{{acr_login_server.value}}/{{podman_name}}:casopractico2"
 
     - name: Build and push an image using existing credentials
       containers.podman.podman_image:
-        name: "{{acr_login_server.value}}{{podman_name}}:casopractico2"
+        name: "{{acr_login_server.value}}/{{podman_name}}:casopractico2"
         path: "{{path}}"
         push: true
         push_args:
@@ -30,7 +30,7 @@
       containers.podman.podman_container:
         name: "{{container_name}}"
         ports: 8080:443
-        image: "{{target_name}}"
+        image: "{{acr_login_server.value}}/{{podman_name}}:casopractico2"
         state: started
         recreate: true
         generate_systemd:
