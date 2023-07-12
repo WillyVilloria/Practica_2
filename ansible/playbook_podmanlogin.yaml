@@ -1,10 +1,10 @@
 ---
 - name: "{{playbookname}}"
-  hosts: webservers
-  remote_user: "{{remote_user}}"
+  hosts: "{{host}}"
+  remote_user: "{{ssh_user.value}}"
   become: true
   vars_files:
-    - vars/00_vars.yaml
+    - vars/vars_podmanlogin.yaml
     - vars/outputs.json
   tasks:
 

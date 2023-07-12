@@ -1,11 +1,11 @@
 ---
 - name: "{{playbookname}}"
-  hosts: webservers
-  remote_user: "{{remote_user}}"
+  hosts: "{{host}}"
+  remote_user: "{{ssh_user.value}}"
   become: true
   vars_files:
-    - vars/00_vars.yaml
-
+    - vars/vars_certificados.yaml
+    - vars/outputs.json
   tasks:
 
     - name: Create a directory if it does not exist

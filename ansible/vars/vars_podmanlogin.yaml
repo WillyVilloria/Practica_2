@@ -1,0 +1,4 @@
+playbookname: 'playbook login podman with acr'
+host: 'webservers'
+zone: 'Europe/Madrid'
+path: 'webserver'

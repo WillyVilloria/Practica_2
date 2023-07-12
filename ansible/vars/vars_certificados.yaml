@@ -1,3 +1,4 @@
+playbookname: 'playbook genera los certificados y las claves'
+host: 'webservers'
 zone: 'Europe/Madrid'
-rpms: 'httpd'
-mensaje: 'Este es el mensaje que imprime Ansible'
+path: 'webserver'
