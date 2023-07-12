@@ -1,0 +1,15 @@
+---
+- name: "{{playbookname}}"
+  hosts: webservers
+  remote_user: "{{remote_user}}"
+  become: true
+  vars_files:
+    - vars/00_vars.yaml
+    - vars/outputs.json
+  tasks:
+
+    - name: Login to default registry and create ${XDG_RUNTIME_DIR}/containers/auth.json
+      containers.podman.podman_login:
+        username: "{{acr_admin_user.value}}"
+        password: "{{acr_admin_pass.value}}"
+        registry: "{{acr_login_server.value}}"

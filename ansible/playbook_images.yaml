@@ -1,0 +1,44 @@
+---
+- name: "{{playbookname}}"
+  hosts: webservers
+  remote_user: "{{remote_user}}"
+  become: true
+  vars_files:
+    - vars/00_vars.yaml
+
+  tasks:
+
+    - name: Build a basic OCI image
+      containers.podman.podman_image:
+        name: "{{podman_name}}"
+        path: "{{path}}"
+
+    - containers.podman.podman_tag:
+        image: "localhost/{{podman_name}}:latest"
+        target_names:
+          - "{{target_name}}"
+
+    - name: Build and push an image using existing credentials
+      containers.podman.podman_image:
+        name: "{{target_name}}"
+        path: "{{path}}"
+        push: true
+        push_args:
+          dest: "{{registry_name}}.azurecr.io"
+
+    - name: Create a webserver container
+      containers.podman.podman_container:
+        name: "{{container_name}}"
+        ports: 8080:443
+        image: "{{target_name}}"
+        state: started
+        recreate: true
+        generate_systemd:
+          path: /etc/systemd/system/
+          restart_policy: always
+          time: 120
+          names: true
+          container_prefix: "{{container_prefix}}"
+
+    - name: Habilitar el servicio
+      command: "systemctl enable {{container_prefix}}-{{container_name}}.service"

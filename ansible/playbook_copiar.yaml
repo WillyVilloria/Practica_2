@@ -1,7 +1,7 @@
 ---
 - name: "{{playbookname}}"
   hosts: webservers
-  remote_user: miguelcontenedor
+  remote_user: "{{remote_user}}"
   become: true
   vars_files:
     - vars/00_vars.yaml

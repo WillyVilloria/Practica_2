@@ -1,5 +1,5 @@
 ---
-- name: "{{playbookname}}"
+- name: inicio
   hosts: terraform_host
   gather_facts: false
   vars_files: 
@@ -9,7 +9,7 @@
     - name: Ejecutar Terraform
       command: terraform output -json
       args:
-        chdir: /home/miguel/Documentos/Proyectos/devops_ejercicios/ejercicio_ansible_podman/terraform
+        chdir: /home/miguel/Documentos/Proyectos/Practica_2/terraform
 
       register: terraform_output
 
