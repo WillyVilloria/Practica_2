@@ -1,0 +1,44 @@
+---
+- name: "{{playbookname}}"
+  hosts: webservers
+  remote_user: "{{ssh_user.value}}"
+  become: true
+  vars_files:
+    - vars/vars_images.yaml
+    - vars/outputs.json
+  tasks:
+
+    - name: Build a basic OCI image
+      containers.podman.podman_image:
+        name: "{{podman_name}}"
+        path: "{{path}}"
+
+    - containers.podman.podman_tag:
+        image: "localhost/{{podman_name}}:latest"
+        target_names:
+          - "{{acr_login_server.value}}/{{podman_name}}:casopractico2"
+
+    - name: Build and push an image using existing credentials
+      containers.podman.podman_image:
+        name: "{{acr_login_server.value}}/{{podman_name}}:casopractico2"
+        path: "{{path}}"
+        push: true
+        push_args:
+          dest: "{{acr_login_server.value}}"
+
+    - name: Create a webserver container
+      containers.podman.podman_container:
+        name: "{{container_name}}"
+        ports: 8080:443
+        image: "{{acr_login_server.value}}/{{podman_name}}:casopractico2"
+        state: started
+        recreate: true
+        generate_systemd:
+          path: /etc/systemd/system/
+          restart_policy: always
+          time: 120
+          names: true
+          container_prefix: "{{container_prefix}}"
+
+    - name: Habilitar el servicio
+      command: "systemctl enable {{container_prefix}}-{{container_name}}.service"

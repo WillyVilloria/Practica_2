@@ -1,0 +1,4 @@
+playbookname: 'playbook genera los certificados y las claves'
+host: 'webservers'
+zone: 'Europe/Madrid'
+path: 'webserver'

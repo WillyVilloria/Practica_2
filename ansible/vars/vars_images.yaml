@@ -1,0 +1,7 @@
+playbookname: 'playbook despliegue'
+host: 'webservers'
+zone: 'Europe/Madrid'
+path: 'webserver'
+podman_name: 'webserver'
+container_name: 'web'
+container_prefix: 'wservice'

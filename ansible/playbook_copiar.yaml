@@ -1,0 +1,39 @@
+---
+- name: "{{playbookname}}"
+  hosts: "{{host}}"
+  remote_user: "{{ssh_user.value}}"
+  become: true
+  vars_files:
+    - vars/vars_copiar.yaml
+    - vars/outputs.json
+  tasks:
+
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: "{{path}}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy file index.html
+      ansible.builtin.copy:
+        src: files/index.html
+        dest: "{{path}}/index.html"
+        mode: '0644'
+
+    - name: Copy file ansible/files/.htaccess
+      ansible.builtin.copy:
+        src: files/.htaccess
+        dest: "{{path}}/.htaccess"
+        mode: '0644'
+    
+    - name: Copy file ansible/files/httpd.conf
+      ansible.builtin.copy:
+        src: files/httpd.conf
+        dest: "{{path}}/httpd.conf"
+        mode: '0644'
+
+    - name: Copy file ansible/files/Containerfile
+      ansible.builtin.copy:
+        src: files/Containerfile
+        dest: "{{path}}/Containerfile"
+        mode: '0644'
