@@ -21,7 +21,7 @@ spec:
             claimName: pvc-managed-csi
       containers:
       - name: persistent-storage
-        image: cassandra
+        image: nginx
         resources:
           requests:
             cpu: 100m
@@ -31,9 +31,9 @@ spec:
             memory: 256Mi
         ports:
         - containerPort: 80
-          name: "cassandra"
+          name: "http-server"
         volumeMounts:
-          - mountPath: "/usr/share/cassandra"
+          - mountPath: "/usr/share/nginx/html"
             name: example-pv-storage
 ---
 apiVersion: v1
@@ -43,7 +43,6 @@ metadata:
   namespace: practica-k8s
 spec:
   type: LoadBalancer
-  persistentVolumeReclaimPolicy: Retain
   ports:
   - port: 80
   selector:
@@ -61,5 +60,3 @@ spec:
       storage: 1Gi
   accessModes:
     - ReadWriteOnce
-
-

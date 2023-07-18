@@ -1,5 +1,7 @@
 - name: Autenticacion kubernetes
   hosts: localhost
+  vars_files:
+    - vars/vars_k8s.yaml
     
   tasks:
     - name: Instalar kubernetes 
@@ -12,7 +14,7 @@
 
     - name: Create a k8s namespace
       kubernetes.core.k8s:
-        name: practica2test
+        name: "{{k8s_namespace}}"
         api_version: v1
         kind: Namespace
         state: present
@@ -20,22 +22,30 @@
     - name: Get an existing Service object
       kubernetes.core.k8s_info:
         api_version: v1
-        kind: Service
-        name: web
-        namespace: testing
-      register: web_service
+        kind: Namespace
+        name: "{{k8s_namespace}}"
+      register: namespace
+    
+    - debug:
+        var: namespace
+
+    - name: Create a persistant service from a local file
+      kubernetes.core.k8s:
+        state: present
+        src: "{{aplicacion.definicion}}"
+
 
     - name: Get a list of all service objects
       kubernetes.core.k8s_info:
         api_version: v1
         kind: Service
-        namespace: testing
+        namespace: "{{k8s_namespace}}"
       register: service_list
 
-#    - name: Create a Deployment by reading the definition from a local file
-#      kubernetes.core.k8s:
-#        state: present
-#        src: k8sfiles/k8s_persistent_storage.yaml
+    - debug:
+        var: service_list
+
+
     
 
     

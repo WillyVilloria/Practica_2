@@ -8,7 +8,7 @@
     - vars/outputs.json
   tasks:
 
-    - name: Crear archivo htpasswd
+    - name: Generate file htpasswd
       community.general.htpasswd:
         name: miguel
         password: nopass

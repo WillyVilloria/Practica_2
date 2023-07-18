@@ -11,11 +11,8 @@ clean_user=$(echo "$user" | tr -d '"')
 clean_pass=$(echo "$pass" | tr -d '"')
 clean_sshuser=$(echo "$sshuser" | tr -d '"')
 echo $clean_ip
-# pruebo esta forma
+
 echo "$clean_ip" > hosts
-#cat <<EOF > hosts
-#$clean_ip
-#EOF
 
 cat <<EOF > inventory
 [webservers]
@@ -27,5 +24,3 @@ $clean_ip nombre_dominio=database.example.com ip_interna=10.0.2.5
 [terraform_host]
 localhost ansible_connection=local
 EOF
-
-#ssh $clean_sshuser@$clean_ip

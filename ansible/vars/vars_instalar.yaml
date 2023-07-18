@@ -6,6 +6,6 @@ rpms2: 'podman'
 rpms3: 'skopeo'
 rpms4: 'openssl'
 rpms5: 'passlib'
-path: 'webserver'
+
 
 
