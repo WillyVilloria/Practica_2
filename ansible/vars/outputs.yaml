@@ -1,7 +1,7 @@
 acr_admin_pass:
     sensitive: true
     type: string
-    value: B9rCJ58z3ylQ2W4/02AEv9NwlYV7d4ReKOd+2sNhYE+ACRDuTLN3
+    value: HkojN7qtKfWZ22ezBdnDsOgpVPJZ93UqwfDiClLD/H+ACRBMOSmq
 acr_admin_user:
     sensitive: true
     type: string
@@ -17,4 +17,4 @@ ssh_user:
 vm_public_ip:
     sensitive: false
     type: string
-    value: 51.104.231.184
+    value: 51.11.142.104

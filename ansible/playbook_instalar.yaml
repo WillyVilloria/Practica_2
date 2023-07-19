@@ -16,11 +16,6 @@
       yum:
         name: "{{ rpms1 }}"
         state: latest
-    
-    - name: 'instalo podman'
-      yum:
-        name: "{{ rpms2 }}"
-        state: latest
 
     - name: 'instalo openssl'
       yum:

@@ -45,6 +45,3 @@
         name: "{{container_prefix}}-{{container_name}}.service"
         state: started
         enabled: yes
-
-#    - name: Habilitar el servicio
-#      command: "systemctl enable {{container_prefix}}-{{container_name}}.service"

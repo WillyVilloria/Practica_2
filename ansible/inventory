@@ -1,8 +1,8 @@
 [webservers]
-51.104.231.184 nombre_dominio=webserver.example.com ip_interna=10.0.2.4
+51.11.142.104 nombre_dominio=webserver.example.com ip_interna=10.0.2.4
 
 [databases]
-51.104.231.184 nombre_dominio=database.example.com ip_interna=10.0.2.5
+51.11.142.104 nombre_dominio=database.example.com ip_interna=10.0.2.5
 
 [terraform_host]
 localhost ansible_connection=local

@@ -16,7 +16,7 @@
 
     - name: Copy file ansible/files_k8s/Containerfile
       ansible.builtin.copy:
-        src: files_k8s/Containerfile
+        src: k8sfiles/Containerfile
         dest: "{{path_k8s}}/Containerfile"
         mode: '0644'
 
@@ -25,6 +25,11 @@
         name: "{{podmank8s_name}}"
         path: "{{path_k8s}}"
 
+    - containers.podman.podman_tag:
+        image: "{{podmank8s_name}}:latest"
+        target_names:
+          - "{{acr_login_server.value}}/{{podman_name}}:{{tag_name}}"
+
     - name: Build and push an image using existing credentials
       containers.podman.podman_image:
         name: "{{acr_login_server.value}}/{{podmank8s_name}}:{{tag_name}}"
@@ -32,9 +37,23 @@
         push: true
         push_args:
           dest: "{{acr_login_server.value}}"
+    
+    - name: Run container
+      containers.podman.podman_container:
+        name: "{{container8s_name}}"
+        ports: 8080:8080
+        image: "{{acr_login_server.value}}/{{podmank8s_name}}:{{tag_name}}"
+        state: started
+        recreate: true
+        generate_systemd:
+          path: /etc/systemd/system/
+          restart_policy: always
+          time: 120
+          names: true
+          container_prefix: "{{containerk8s_prefix}}"
 
-#    - name: Iniciar servicio 
-#      systemd: 
-#        name: "{{container_prefix}}-{{container_name}}.service"
-#        state: started
-#        enabled: yes
+    - name: Iniciar servicio 
+      systemd: 
+        name: "{{containerk8s_prefix}}-{{container8s_name}}.service"
+        state: started
+        enabled: yes

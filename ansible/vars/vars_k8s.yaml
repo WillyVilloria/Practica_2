@@ -3,7 +3,8 @@ directorio_trabajo: "/tmp"
 aplicacion:
   #definicion: "k8sfiles/k8s_persistent_storage.yaml"
   #definicion: "k8sfiles/persistent_storage.yaml"
-  definicion: "k8sfiles/k8s_pod.yaml"
+  #definicion: "k8sfiles/k8s_pod.yaml"
+  definicion: "k8sfiles/pod_prueba.yaml"
   backend:
     nombre: app-back 
     imagen: mcr.microsoft.com/oss/bitnami/redis:6.0.8
