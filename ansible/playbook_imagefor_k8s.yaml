@@ -1,0 +1,40 @@
+---
+- name: 'playbook despliegue para k8s'
+  hosts: "{{host}}"
+  remote_user: "{{ssh_user.value}}"
+  become: true
+  vars_files:
+    - vars/vars.yaml
+    - vars/outputs.json
+  tasks:
+
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: "{{path_k8s}}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy file ansible/files_k8s/Containerfile
+      ansible.builtin.copy:
+        src: files_k8s/Containerfile
+        dest: "{{path_k8s}}/Containerfile"
+        mode: '0644'
+
+    - name: Pull an image
+      containers.podman.podman_image:
+        name: "{{podmank8s_name}}"
+        path: "{{path_k8s}}"
+
+    - name: Build and push an image using existing credentials
+      containers.podman.podman_image:
+        name: "{{acr_login_server.value}}/{{podmank8s_name}}:{{tag_name}}"
+        path: "{{path_k8s}}"
+        push: true
+        push_args:
+          dest: "{{acr_login_server.value}}"
+
+#    - name: Iniciar servicio 
+#      systemd: 
+#        name: "{{container_prefix}}-{{container_name}}.service"
+#        state: started
+#        enabled: yes

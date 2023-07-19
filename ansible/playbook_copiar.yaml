@@ -4,7 +4,7 @@
   remote_user: "{{ssh_user.value}}"
   become: true
   vars_files:
-    - vars/vars_copiar.yaml
+    - vars/vars.yaml
     - vars/outputs.json
   tasks:
 

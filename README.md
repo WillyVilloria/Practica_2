@@ -301,3 +301,20 @@ pod/persistent-storage-67bd677444-jjkn5   0/1     Pending   0          21m
 NAME                         TYPE           CLUSTER-IP     EXTERNAL-IP    PORT(S)        AGE
 service/persistent-storage   LoadBalancer   10.0.137.122   51.105.21.76   80:31888/TCP   21m
 
+
+
+# miguel@willy:~$ kubectl exec -it task-pv-pod -n practica-k8s -- /bin/bash 
+*** listar puntos de montaje ***
+# root@task-pv-pod:/# df -h
+Filesystem                                                                                Size  Used Avail Use% Mounted on
+overlay                                                                                   124G   21G  104G  17% /
+tmpfs                                                                                      64M     0   64M   0% /dev
+/dev/root                                                                                 124G   21G  104G  17% /etc/hosts
+shm                                                                                        64M     0   64M   0% /dev/shm
+//f7709614657ce403c949d0d.file.core.windows.net/pvc-7a6ba0bd-c503-43f4-bfc2-0bb4979f4884  1.0G     0  1.0G   0% /usr/share/nginx/html
+tmpfs                                                                                     4.5G   12K  4.5G   1% /run/secrets/kubernetes.io/serviceaccount
+tmpfs                                                                                     3.4G     0  3.4G   0% /proc/acpi
+tmpfs                                                                                     3.4G     0  3.4G   0% /proc/scsi
+tmpfs                                                                                     3.4G     0  3.4G   0% /sys/firmware
+root@task-pv-pod:/# 
+

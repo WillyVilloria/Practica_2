@@ -34,7 +34,6 @@
         state: present
         src: "{{aplicacion.definicion}}"
 
-
     - name: Get a list of all service objects
       kubernetes.core.k8s_info:
         api_version: v1
@@ -44,6 +43,8 @@
 
     - debug:
         var: service_list
+
+    
 
 
     
