@@ -1,0 +1,29 @@
+---
+- name: borrar
+  hosts: localhost
+  vars_files:
+    - vars/vars_k8s.yaml
+
+  tasks:
+
+#    - name: Iniciar servicio de jenkins
+#      systemd: 
+#        name: service/jenkins-storage
+#        state: stopped
+#        enabled: yes
+
+    - name: Remove pods
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        namespace: practica-k8s
+        name: task-pv-pod
+    
+    - name: Remove pvc
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: PersistentVolumeClaim
+        namespace: practica-k8s
+        name: pvc-jenkins

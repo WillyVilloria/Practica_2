@@ -1,0 +1,52 @@
+- name: Autenticacion kubernetes
+  hosts: localhost
+  vars_files:
+    - vars/vars_k8s.yaml
+    
+  tasks:
+    - name: Instalar kubernetes 
+      pip:
+        name: kubernetes
+        state: present
+           
+    - name: credenciales aks
+      shell: az aks get-credentials --name aks01 --resource-group practica2rg --overwrite-existing
+
+    - name: Create a k8s namespace
+      kubernetes.core.k8s:
+        name: "{{k8s_namespace}}"
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Get an existing Service object
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Namespace
+        name: "{{k8s_namespace}}"
+      register: namespace
+    
+    - debug:
+        var: namespace
+
+    - name: Create a persistant service from a local file
+      kubernetes.core.k8s:
+        state: present
+        src: "{{aplicacion.definicion}}"
+
+    - name: Get a list of all service objects
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Service
+        namespace: "{{k8s_namespace}}"
+      register: service_list
+
+    - debug:
+        var: service_list
+
+    
+
+
+    
+
+    

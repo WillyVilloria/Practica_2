@@ -1,4 +1,3 @@
 playbookname: 'playbook copia los archivos del directorio /file'
 host: 'webservers'
-zone: 'Europe/Madrid'
 path: 'webserver'

@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: persistent-storage
+  namespace: practica-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: persistent-storage
+  template:
+    metadata:
+      labels:
+        app: persistent-storage
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      volumes:
+        - name: example-pv-storage
+          persistentVolumeClaim:
+            claimName: pvc-managed-csi
+      containers:
+      - name: persistent-storage
+        image: cassandra
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+          name: "cassandra"
+        volumeMounts:
+          - mountPath: "/usr/share/cassandra"
+            name: example-pv-storage
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: persistent-storage
+  namespace: practica-k8s
+spec:
+  type: LoadBalancer
+  persistentVolumeReclaimPolicy: Retain
+  ports:
+  - port: 80
+  selector:
+    app: persistent-storage
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-azurefile-csi
+  namespace: practica-k8s
+spec:
+  storageClassName: azurefile-csi
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+
+

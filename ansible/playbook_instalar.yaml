@@ -1,21 +1,20 @@
 ---
-- name: "{{playbookname}}"
+- name: 'playbook instala aplicaciones en vm'
   hosts: "{{host}}"
   remote_user: "{{ssh_user.value}}"
   become: true
   vars_files:
-    - vars/vars_instalar.yaml
+    - vars/vars.yaml
     - vars/outputs.json
   tasks:
+
+    - name: 'cambio zonahoraria'
+      timezone:
+        name: "{{ zone }}"
 
     - name: 'instalo httpd'
       yum:
         name: "{{ rpms1 }}"
-        state: latest
-    
-    - name: 'instalo podman'
-      yum:
-        name: "{{ rpms2 }}"
         state: latest
 
     - name: 'instalo openssl'
