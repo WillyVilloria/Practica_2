@@ -5,7 +5,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = var.azurerm_kubernetes_cluster
 
   default_node_pool {
-    name       = "node1"
+    name       = "default"
     node_count = 2
     vm_size    = "Standard_D2_v2"
   }
@@ -16,4 +16,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
   tags = {
     Environment = "Develop"
   }
+}
+resource "azurerm_role_assignment" "aksrole" {
+  principal_id                     = azurerm_kubernetes_cluster.aks.kubelet_identity[0].object_id
+  role_definition_name             = "AcrPull"
+  scope                            = azurerm_kubernetes_cluster.aks.id
+  skip_service_principal_aad_check = true
 }

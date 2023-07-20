@@ -29,7 +29,7 @@
     - name: Create a webserver container
       containers.podman.podman_container:
         name: "{{container_name}}"
-        ports: 8081:443
+        ports: 8090:443
         image: "{{acr_login_server.value}}/{{podman_name}}:{{tag_name}}"
         state: started
         recreate: true
