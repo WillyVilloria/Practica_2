@@ -1,3 +1,0 @@
-playbookname: 'playbook genera los certificados y las claves'
-host: 'webservers'
-path: 'webserver'
