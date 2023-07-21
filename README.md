@@ -1,22 +1,22 @@
 # Practica_2
 version 0.0.1
 # terraform
-1 creo infraestructura con terraform
-    archivo acs.tf -- > grupo de recursos (rg)
-    archivo acs.tf -- > container registry (acr)
-    archivo aks.tf --> cluster de kubernetes (aks)
-    archivo vm.tf --> virtual network
-                      subnet
-                      network interface
-                      public ip
-                      virtual machine (vm)
-                      admin de ssh
-                      plan
-                      source image reference
-                      grupo de network security (ngs1)
+1 creo infraestructura con terraform.
+    archivo acs.tf -- > grupo de recursos (rg).
+    archivo acs.tf -- > container registry (acr).
+    archivo aks.tf --> cluster de kubernetes (aks).
+    archivo vm.tf --> virtual network.
+                      subnet.
+                      network interface.
+                      public ip.
+                      virtual machine (vm).
+                      admin de ssh.
+                      plan.
+                      source image reference.
+                      grupo de network security (ngs1).
                         Permito rango de puertos http 8080-8090 para poder tener más de un puerto de acceso ya que vamos a tener dos aplicaciones funcionando a la vez.
                       azurerm_subnet_network_security_group_association (ngs-link)
-    archivo imput-vars.tf --> archivo de variables con los nombres y datos necesarios para crear los recursos nombrados en los archivos anteriores
+    archivo imput-vars.tf --> archivo de variables con los nombres y datos necesarios para crear los recursos nombrados en los archivos anteriores.
     archivo outputs.tf --> archivo con las varibles de salida. 
 # ansible
 2 con ansible tengo que preparar la imagen de podman para albergar la web
