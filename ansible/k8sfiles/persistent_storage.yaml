@@ -1,27 +1,27 @@
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: persistent-storage
-  namespace: practica-k8s
+  namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: jenkins-storage
+      app: persistent-storage
   template:
     metadata:
       labels:
-        app: jenkins-storage
+        app: persistent-storage
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
       volumes:
-        - name: jenkins-pv-storage
+        - name: example-pv-storage
           persistentVolumeClaim:
-            claimName: jenkins-storage
+            claimName: pvc-managed-csi
       containers:
-      - name: jenkins-storage
-        image: https://hub.docker.com/r/jenkins/jenkins
+      - name: persistent-storage
+        image: practica2acr.azurecr.io/nginx:casopractico2
         resources:
           requests:
             cpu: 100m
@@ -30,31 +30,31 @@ spec:
             cpu: 250m
             memory: 256Mi
         ports:
-        - containerPort: 8080
-          name: "jenkins-ejemplo"
+        - containerPort: 80
+          name: "http-server"
         volumeMounts:
-          - mountPath: "/usr/share/jenkins"
-            name: jenkins-pv-storage
+          - mountPath: "/usr/share/nginx/html"
+            name: example-pv-storage
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: jenkins-storage
-  namespace: practica-k8s
+  name: persistent-storage
+  namespace: default
 spec:
   type: LoadBalancer
   ports:
-  - port: 8080
+  - port: 80
   selector:
-    app: jenkins-storage
+    app: persistent-storage
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-jenkins
-  namespace: practica-k8s
+  name: pvc-managed-csi
+  namespace: default
 spec:
-  storageClassName: azurefile-csi
+  storageClassName: managed-csi
   resources:
     requests:
       storage: 1Gi

@@ -8,7 +8,7 @@
     - vars/outputs.json
   tasks:
 
-    - name: Login to default registry and create ${XDG_RUNTIME_DIR}/containers/auth.json
+    - name: Login to default registry with outputs.json
       containers.podman.podman_login:
         username: "{{acr_admin_user.value}}"
         password: "{{acr_admin_pass.value}}"

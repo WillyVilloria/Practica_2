@@ -7,7 +7,7 @@
   tasks:
 
     - name: Ejecutar Terraform
-      command: terraform output -json
+      shell: terraform output -json
       args:
         chdir: /home/miguel/Documentos/Proyectos/Practica_2/terraform
 

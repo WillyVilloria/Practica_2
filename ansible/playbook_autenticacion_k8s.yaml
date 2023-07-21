@@ -19,30 +19,11 @@
         kind: Namespace
         state: present
 
-    - name: Get an existing Service object
-      kubernetes.core.k8s_info:
-        api_version: v1
-        kind: Namespace
-        name: "{{k8s_namespace}}"
-      register: namespace
-    
-    - debug:
-        var: namespace
-
     - name: Create a persistant service from a local file
       kubernetes.core.k8s:
         state: present
         src: "{{aplicacion.definicion}}"
 
-    - name: Get a list of all service objects
-      kubernetes.core.k8s_info:
-        api_version: v1
-        kind: Service
-        namespace: "{{k8s_namespace}}"
-      register: service_list
-
-    - debug:
-        var: service_list
 
     
 

@@ -21,13 +21,37 @@ Creo infraestructura con terraform.
     - archivo imput-vars.tf --> archivo de variables con los nombres y datos necesarios para crear los recursos nombrados en los archivos anteriores.
     - archivo outputs.tf --> archivo con las varibles de salida. 
 ## ansible
-2 con ansible tengo que preparar la imagen de podman para albergar la web
-    * instalo podman
-    * instalo skopeo
-    * instalo httpd-tools
-    * instalo openssl
-    * Creo el directorio webserver
-    creo el fichero de credenciales .creds
+Despliegue con ansible de aplicaciones:
+    - archivo deploy.sh --> archivo con comando de consola que realiza las siguientes funciones:
+        - llamada al archivo terra.sh para ejecutar los comandos de terraform y realizar el despliegue de la infraestructura comentada anteriormente
+        -  una vez terminado el despliegue se realiza la llamada de los playbooks de ansible:
+          -  playbook_obtenerlogs.yaml --> ejecuta un comando shell que obtiene las variables de salida definidas en el despliegue de terraform con el archivo outputs.tf, guarda la información en un registro y despuñes lo vuelco a dos archivos diferentes llamados outputs pero uno con formato json y el otro yaml.
+          - utilizo el archivo dep_vars.sh básicamente leo las varibles de archivo vars.sjon y utilizo la ip para guardarla en los archivos hosts e inventory y así poder automatizar el despliegue con ansible.
+          - playbook_instalarpodman.yaml --> instala la aplicación podman. utilizaré los archivos de variables vars.yaml y el de outputs.json con los datos obtenidos del despliegue de terraform.
+          - playbook_instalar.yaml --> instala las aplicaciones y modulos cesarios para realizar la práctica. Destaco la instalación del módulo passlib de python ya que tenía un error en los despliegue en los que se me comunicaba que era imposible exportar este módulo desde el plano de control.
+          - playbook_copiar.yaml --> 
+              - crea el directorio webserver que es donde se copiarán los archivos necesarios para el despliegue de la aplicación web requerida en la práctica.
+              - copio archivo principal de la web -> index.html
+              - copio archivo .htacces de configuración de la autenticación.
+              - copio archivo httpd.conf con la configuración de un servidor apache2
+              - copio archivo Containerfile con la configuración los chivos que se deben volcar en los direcotrios de apache2.
+          - playbook_certificados.yaml --> se generan los certificados de seguridad OppenSSL
+          - playbook_podmanlogin.yaml -->  se loguea podman con el acr de azure con los datos guardados en el archivo outputs.json.
+          - playbook_images.yaml --> 
+              - genero imagen
+              - tageo la imagen con el nombre de la actividad
+              - subo la imagen al acr de azure
+              - creo el contenedor para un servidor web
+              - inicio el servicio.
+          - playbook_imagefor_k8s.yaml --> 
+              - obtengo una imagen de nginx desde dockers
+              - tageo la imagen con el nombre de la actividad
+              - subo la imagen al acr de azure
+              - genero el servicio de la aplicación
+              - inicio el servicio.
+          - playbook_autenticacion_k8s.yaml -->
+    
+    
 
     # generacion del certificado autofirmado
         *creo clave privada para el certificado
@@ -102,236 +126,5 @@ CONTAINER ID  IMAGE                                                  COMMAND    
 fd7956af8772  practica2acr.azurecr.io/jenkins/jenkins:casopractico2  java -jar /usr/sh...  29 minutes ago  Up 49 seconds ago      0.0.0.0:8080->8080/tcp  aplicacion
 287e25705c35  practica2acr.azurecr.io/webserver:casopractico2        httpd-foreground      4 minutes ago   Up About a minute ago  0.0.0.0:8090->443/tcp   web
 [casopractico2@vm ~]$ 
-
-
-miguel@willy:~$ kubectl describe node aks-default-41951121-vmss000000
-Name:               aks-default-41951121-vmss000000
-Roles:              agent
-Labels:             agentpool=default
-                    beta.kubernetes.io/arch=amd64
-                    beta.kubernetes.io/instance-type=Standard_D2_v2
-                    beta.kubernetes.io/os=linux
-                    failure-domain.beta.kubernetes.io/region=uksouth
-                    failure-domain.beta.kubernetes.io/zone=0
-                    kubernetes.azure.com/agentpool=default
-                    kubernetes.azure.com/cluster=MC_practica2rg_aks01_uksouth
-                    kubernetes.azure.com/consolidated-additional-properties=d0438adf-26ef-11ee-a7f7-564b98600cf9
-                    kubernetes.azure.com/kubelet-identity-client-id=98030437-8015-4c74-bf64-fd493fd7d66e
-                    kubernetes.azure.com/mode=system
-                    kubernetes.azure.com/node-image-version=AKSUbuntu-2204containerd-202307.04.0
-                    kubernetes.azure.com/nodepool-type=VirtualMachineScaleSets
-                    kubernetes.azure.com/os-sku=Ubuntu
-                    kubernetes.azure.com/role=agent
-                    kubernetes.azure.com/storageprofile=managed
-                    kubernetes.azure.com/storagetier=Standard_LRS
-                    kubernetes.io/arch=amd64
-                    kubernetes.io/hostname=aks-default-41951121-vmss000000
-                    kubernetes.io/os=linux
-                    kubernetes.io/role=agent
-                    node-role.kubernetes.io/agent=
-                    node.kubernetes.io/instance-type=Standard_D2_v2
-                    storageprofile=managed
-                    storagetier=Standard_LRS
-                    topology.disk.csi.azure.com/zone=
-                    topology.kubernetes.io/region=uksouth
-                    topology.kubernetes.io/zone=0
-Annotations:        csi.volume.kubernetes.io/nodeid:
-                      {"disk.csi.azure.com":"aks-default-41951121-vmss000000","file.csi.azure.com":"aks-default-41951121-vmss000000"}
-                    node.alpha.kubernetes.io/ttl: 0
-                    volumes.kubernetes.io/controller-managed-attach-detach: true
-CreationTimestamp:  Thu, 20 Jul 2023 13:25:46 +0200
-Taints:             <none>
-Unschedulable:      false
-Lease:
-  HolderIdentity:  aks-default-41951121-vmss000000
-  AcquireTime:     <unset>
-  RenewTime:       Thu, 20 Jul 2023 14:19:39 +0200
-Conditions:
-  Type                 Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
-  ----                 ------  -----------------                 ------------------                ------                       -------
-  NetworkUnavailable   False   Thu, 20 Jul 2023 13:27:45 +0200   Thu, 20 Jul 2023 13:27:45 +0200   RouteCreated                 RouteController created a route
-  MemoryPressure       False   Thu, 20 Jul 2023 14:16:37 +0200   Thu, 20 Jul 2023 13:25:46 +0200   KubeletHasSufficientMemory   kubelet has sufficient memory available
-  DiskPressure         False   Thu, 20 Jul 2023 14:16:37 +0200   Thu, 20 Jul 2023 13:25:46 +0200   KubeletHasNoDiskPressure     kubelet has no disk pressure
-  PIDPressure          False   Thu, 20 Jul 2023 14:16:37 +0200   Thu, 20 Jul 2023 13:25:46 +0200   KubeletHasSufficientPID      kubelet has sufficient PID available
-  Ready                True    Thu, 20 Jul 2023 14:16:37 +0200   Thu, 20 Jul 2023 13:25:56 +0200   KubeletReady                 kubelet is posting ready status. AppArmor enabled
-Addresses:
-  InternalIP:  10.224.0.4
-  Hostname:    aks-default-41951121-vmss000000
-Capacity:
-  cpu:                2
-  ephemeral-storage:  129886128Ki
-  hugepages-1Gi:      0
-  hugepages-2Mi:      0
-  memory:             7098320Ki
-  pods:               110
-Allocatable:
-  cpu:                1900m
-  ephemeral-storage:  119703055367
-  hugepages-1Gi:      0
-  hugepages-2Mi:      0
-  memory:             4653008Ki
-  pods:               110
-System Info:
-  Machine ID:                 35f3d55a0c514a628c1a2ca4728677b6
-  System UUID:                b1ae6e4f-9dec-d548-b294-e7f29a0f6128
-  Boot ID:                    9d89e8d3-2743-4e35-b99c-bc046a43025a
-  Kernel Version:             5.15.0-1041-azure
-  OS Image:                   Ubuntu 22.04.2 LTS
-  Operating System:           linux
-  Architecture:               amd64
-  Container Runtime Version:  containerd://1.7.1+azure-1
-  Kubelet Version:            v1.25.6
-  Kube-Proxy Version:         v1.25.6
-PodCIDR:                      10.244.1.0/24
-PodCIDRs:                     10.244.1.0/24
-ProviderID:                   azure:///subscriptions/4cec99f2-dcb1-40e5-b292-66072a2186b8/resourceGroups/mc_practica2rg_aks01_uksouth/providers/Microsoft.Compute/virtualMachineScaleSets/aks-default-41951121-vmss/virtualMachines/0
-Non-terminated Pods:          (7 in total)
-  Namespace                   Name                                   CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
-  ---------                   ----                                   ------------  ----------  ---------------  -------------  ---
-  kube-system                 azure-ip-masq-agent-dsxvl              100m (5%)     500m (26%)  50Mi (1%)        250Mi (5%)     54m
-  kube-system                 cloud-node-manager-7nhbl               50m (2%)      0 (0%)      50Mi (1%)        512Mi (11%)    54m
-  kube-system                 csi-azuredisk-node-bk9lw               30m (1%)      0 (0%)      60Mi (1%)        400Mi (8%)     54m
-  kube-system                 csi-azurefile-node-9qmvm               30m (1%)      0 (0%)      60Mi (1%)        600Mi (13%)    54m
-  kube-system                 konnectivity-agent-6fcddb8b5b-wxbdd    20m (1%)      1 (52%)     20Mi (0%)        1Gi (22%)      26m
-  kube-system                 kube-proxy-nm7sn                       100m (5%)     0 (0%)      0 (0%)           0 (0%)         54m
-  practica-k8s                task-pv-pod                            0 (0%)        0 (0%)      0 (0%)           0 (0%)         45m
-Allocated resources:
-  (Total limits may be over 100 percent, i.e., overcommitted.)
-  Resource           Requests    Limits
-  --------           --------    ------
-  cpu                330m (17%)  1500m (78%)
-  memory             240Mi (5%)  2786Mi (61%)
-  ephemeral-storage  0 (0%)      0 (0%)
-  hugepages-1Gi      0 (0%)      0 (0%)
-  hugepages-2Mi      0 (0%)      0 (0%)
-Events:
-  Type     Reason                   Age                From             Message
-  ----     ------                   ----               ----             -------
-  Normal   Starting                 53m                kube-proxy       
-  Normal   Starting                 54m                kubelet          Starting kubelet.
-  Warning  InvalidDiskCapacity      54m                kubelet          invalid capacity 0 on image filesystem
-  Normal   NodeHasSufficientMemory  54m (x2 over 54m)  kubelet          Node aks-default-41951121-vmss000000 status is now: NodeHasSufficientMemory
-  Normal   NodeHasNoDiskPressure    54m (x2 over 54m)  kubelet          Node aks-default-41951121-vmss000000 status is now: NodeHasNoDiskPressure
-  Normal   NodeHasSufficientPID     54m (x2 over 54m)  kubelet          Node aks-default-41951121-vmss000000 status is now: NodeHasSufficientPID
-  Normal   NodeAllocatableEnforced  54m                kubelet          Updated Node Allocatable limit across pods
-  Normal   RegisteredNode           53m                node-controller  Node aks-default-41951121-vmss000000 event: Registered Node aks-default-41951121-vmss000000 in Controller
-  Normal   NodeReady                53m                kubelet          Node aks-default-41951121-vmss000000 status is now: NodeReady
-miguel@willy:~$ kubectl describe node aks-default-41951121-vmss000001
-Name:               aks-default-41951121-vmss000001
-Roles:              agent
-Labels:             agentpool=default
-                    beta.kubernetes.io/arch=amd64
-                    beta.kubernetes.io/instance-type=Standard_D2_v2
-                    beta.kubernetes.io/os=linux
-                    failure-domain.beta.kubernetes.io/region=uksouth
-                    failure-domain.beta.kubernetes.io/zone=0
-                    kubernetes.azure.com/agentpool=default
-                    kubernetes.azure.com/cluster=MC_practica2rg_aks01_uksouth
-                    kubernetes.azure.com/consolidated-additional-properties=d0438adf-26ef-11ee-a7f7-564b98600cf9
-                    kubernetes.azure.com/kubelet-identity-client-id=98030437-8015-4c74-bf64-fd493fd7d66e
-                    kubernetes.azure.com/mode=system
-                    kubernetes.azure.com/node-image-version=AKSUbuntu-2204containerd-202307.04.0
-                    kubernetes.azure.com/nodepool-type=VirtualMachineScaleSets
-                    kubernetes.azure.com/os-sku=Ubuntu
-                    kubernetes.azure.com/role=agent
-                    kubernetes.azure.com/storageprofile=managed
-                    kubernetes.azure.com/storagetier=Standard_LRS
-                    kubernetes.io/arch=amd64
-                    kubernetes.io/hostname=aks-default-41951121-vmss000001
-                    kubernetes.io/os=linux
-                    kubernetes.io/role=agent
-                    node-role.kubernetes.io/agent=
-                    node.kubernetes.io/instance-type=Standard_D2_v2
-                    storageprofile=managed
-                    storagetier=Standard_LRS
-                    topology.disk.csi.azure.com/zone=
-                    topology.kubernetes.io/region=uksouth
-                    topology.kubernetes.io/zone=0
-Annotations:        csi.volume.kubernetes.io/nodeid:
-                      {"disk.csi.azure.com":"aks-default-41951121-vmss000001","file.csi.azure.com":"aks-default-41951121-vmss000001"}
-                    node.alpha.kubernetes.io/ttl: 0
-                    volumes.kubernetes.io/controller-managed-attach-detach: true
-CreationTimestamp:  Thu, 20 Jul 2023 13:25:45 +0200
-Taints:             <none>
-Unschedulable:      false
-Lease:
-  HolderIdentity:  aks-default-41951121-vmss000001
-  AcquireTime:     <unset>
-  RenewTime:       Thu, 20 Jul 2023 14:20:12 +0200
-Conditions:
-  Type                 Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
-  ----                 ------  -----------------                 ------------------                ------                       -------
-  NetworkUnavailable   False   Thu, 20 Jul 2023 13:26:45 +0200   Thu, 20 Jul 2023 13:26:45 +0200   RouteCreated                 RouteController created a route
-  MemoryPressure       False   Thu, 20 Jul 2023 14:18:20 +0200   Thu, 20 Jul 2023 13:25:45 +0200   KubeletHasSufficientMemory   kubelet has sufficient memory available
-  DiskPressure         False   Thu, 20 Jul 2023 14:18:20 +0200   Thu, 20 Jul 2023 13:25:45 +0200   KubeletHasNoDiskPressure     kubelet has no disk pressure
-  PIDPressure          False   Thu, 20 Jul 2023 14:18:20 +0200   Thu, 20 Jul 2023 13:25:45 +0200   KubeletHasSufficientPID      kubelet has sufficient PID available
-  Ready                True    Thu, 20 Jul 2023 14:18:20 +0200   Thu, 20 Jul 2023 13:25:55 +0200   KubeletReady                 kubelet is posting ready status. AppArmor enabled
-Addresses:
-  InternalIP:  10.224.0.5
-  Hostname:    aks-default-41951121-vmss000001
-Capacity:
-  cpu:                2
-  ephemeral-storage:  129886128Ki
-  hugepages-1Gi:      0
-  hugepages-2Mi:      0
-  memory:             7098320Ki
-  pods:               110
-Allocatable:
-  cpu:                1900m
-  ephemeral-storage:  119703055367
-  hugepages-1Gi:      0
-  hugepages-2Mi:      0
-  memory:             4653008Ki
-  pods:               110
-System Info:
-  Machine ID:                 39cbf3575ebd45d08b37a940e20b4066
-  System UUID:                4a1a9e08-87b1-2940-900b-713015f78671
-  Boot ID:                    13065996-cc47-4598-bbba-143e435b0224
-  Kernel Version:             5.15.0-1041-azure
-  OS Image:                   Ubuntu 22.04.2 LTS
-  Operating System:           linux
-  Architecture:               amd64
-  Container Runtime Version:  containerd://1.7.1+azure-1
-  Kubelet Version:            v1.25.6
-  Kube-Proxy Version:         v1.25.6
-PodCIDR:                      10.244.0.0/24
-PodCIDRs:                     10.244.0.0/24
-ProviderID:                   azure:///subscriptions/4cec99f2-dcb1-40e5-b292-66072a2186b8/resourceGroups/mc_practica2rg_aks01_uksouth/providers/Microsoft.Compute/virtualMachineScaleSets/aks-default-41951121-vmss/virtualMachines/1
-Non-terminated Pods:          (11 in total)
-  Namespace                   Name                                   CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
-  ---------                   ----                                   ------------  ----------  ---------------  -------------  ---
-  kube-system                 azure-ip-masq-agent-5dsll              100m (5%)     500m (26%)  50Mi (1%)        250Mi (5%)     54m
-  kube-system                 cloud-node-manager-6lhkb               50m (2%)      0 (0%)      50Mi (1%)        512Mi (11%)    54m
-  kube-system                 coredns-autoscaler-69b7556b86-w8d28    20m (1%)      200m (10%)  10Mi (0%)        500Mi (11%)    54m
-  kube-system                 coredns-fb6b9d95f-jzcsn                100m (5%)     3 (157%)    70Mi (1%)        500Mi (11%)    53m
-  kube-system                 coredns-fb6b9d95f-xk4qr                100m (5%)     3 (157%)    70Mi (1%)        500Mi (11%)    54m
-  kube-system                 csi-azuredisk-node-577st               30m (1%)      0 (0%)      60Mi (1%)        400Mi (8%)     54m
-  kube-system                 csi-azurefile-node-xnt2z               30m (1%)      0 (0%)      60Mi (1%)        600Mi (13%)    54m
-  kube-system                 konnectivity-agent-6fcddb8b5b-bwktq    20m (1%)      1 (52%)     20Mi (0%)        1Gi (22%)      26m
-  kube-system                 kube-proxy-9whpk                       100m (5%)     0 (0%)      0 (0%)           0 (0%)         54m
-  kube-system                 metrics-server-845978bcd7-gj4fm        50m (2%)      145m (7%)   89Mi (1%)        359Mi (7%)     53m
-  kube-system                 metrics-server-845978bcd7-tpgpg        50m (2%)      145m (7%)   89Mi (1%)        359Mi (7%)     53m
-Allocated resources:
-  (Total limits may be over 100 percent, i.e., overcommitted.)
-  Resource           Requests     Limits
-  --------           --------     ------
-  cpu                650m (34%)   7990m (420%)
-  memory             568Mi (12%)  5004Mi (110%)
-  ephemeral-storage  0 (0%)       0 (0%)
-  hugepages-1Gi      0 (0%)       0 (0%)
-  hugepages-2Mi      0 (0%)       0 (0%)
-Events:
-  Type     Reason                   Age                From             Message
-  ----     ------                   ----               ----             -------
-  Normal   Starting                 54m                kube-proxy       
-  Normal   RegisteredNode           54m                node-controller  Node aks-default-41951121-vmss000001 event: Registered Node aks-default-41951121-vmss000001 in Controller
-  Normal   Starting                 54m                kubelet          Starting kubelet.
-  Warning  InvalidDiskCapacity      54m                kubelet          invalid capacity 0 on image filesystem
-  Normal   NodeHasSufficientMemory  54m (x2 over 54m)  kubelet          Node aks-default-41951121-vmss000001 status is now: NodeHasSufficientMemory
-  Normal   NodeHasNoDiskPressure    54m (x2 over 54m)  kubelet          Node aks-default-41951121-vmss000001 status is now: NodeHasNoDiskPressure
-  Normal   NodeHasSufficientPID     54m (x2 over 54m)  kubelet          Node aks-default-41951121-vmss000001 status is now: NodeHasSufficientPID
-  Normal   NodeAllocatableEnforced  54m                kubelet          Updated Node Allocatable limit across pods
-  Normal   NodeReady                54m                kubelet          Node aks-default-41951121-vmss000001 status is now: NodeReady
-miguel@willy:~$ 
 
 

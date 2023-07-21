@@ -2,9 +2,9 @@ k8s_namespace: "practica-k8s"
 directorio_trabajo: "/tmp"
 aplicacion:
   #definicion: "k8sfiles/k8s_persistent_storage.yaml"
-  #definicion: "k8sfiles/persistent_storage.yaml"
+  definicion: "k8sfiles/persistent_storage.yaml"
   #definicion: "k8sfiles/k8s_pod.yaml"
-  definicion: "k8sfiles/pod_prueba.yaml"
+  #definicion: "k8sfiles/pod_prueba.yaml"
   backend:
     nombre: app-back 
     imagen: mcr.microsoft.com/oss/bitnami/redis:6.0.8
@@ -15,7 +15,7 @@ aplicacion:
     limites:
       cpu: 250m
       memoria: 256Mi
-    puerto: 6379
+    puerto: 80
   frontend:
     nombre: app-front
     imagen: mcr.microsoft.com/azuredocs/azure-vote-front:v1

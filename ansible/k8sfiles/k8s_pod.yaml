@@ -2,43 +2,43 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: task-pv-pod
+  name: mypod
   namespace: practica-k8s
 spec:
   volumes:
-    - name: pv-jenkins
+    - name: pv-nginx
       persistentVolumeClaim:
-        claimName: pvc-jenkins
+        claimName: pvc-nginx
   containers:
-    - name: pv-jenkins-container
-      image: practica2acr.azurecr.io/jenkins/jenkins:casopractico2
+    - name: pv-nginx-container
+      image: practica2acr.azurecr.io/nginx:casopractico2
       ports:
-        - containerPort: 8080
-          name: "http-server"
+        - containerPort: 80
+          name: "nginx"
       volumeMounts:
-        - mountPath: "/usr/share/jenkins"
-          name: pv-jenkins
+        - mountPath: "/usr/share/nginx"
+          name: pv-nginx
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: pv-jenkins
+  name: pv-nginx
   namespace: practica-k8s
 spec:
   type: LoadBalancer
   ports:
-  - port: 8080
+  - port: 80
   selector:
-    app: jenkins-storage
+    app: nginx-storage
   persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-jenkins
+  name: pvc-nginx
   namespace: practica-k8s
 spec:
-  storageClassName: azurefile-csi
+  storageClassName: managed-csi
   resources:
     requests:
       storage: 1Gi
