@@ -16,6 +16,10 @@ spec:
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
+      volumes:
+        - name: pv-nginx
+          persistentVolumeClaim:
+            claimName: pvc-nginx  
       containers:
       - name: pv-nginx-container
         image: practica2acr.azurecr.io/nginx:casopractico2
@@ -31,7 +35,10 @@ spec:
             memory: 256Mi
         ports:
         - containerPort: 80
-          name: nginx
+          name: nginx-port
+        volumeMounts:
+          - mountPath: "/usr/share/nginx/html"
+            name: pv-nginx
 ---
 apiVersion: v1
 kind: Service
