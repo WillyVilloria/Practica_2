@@ -1,3 +1,0 @@
-playbookname: 'playbook copia los archivos del directorio /file'
-host: 'webservers'
-path: 'webserver'
