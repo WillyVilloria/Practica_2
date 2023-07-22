@@ -26,4 +26,4 @@
       pip:
         name: "{{ rpms5 }}"
         state: present
-      become: true
+      #become: true

@@ -1,27 +1,31 @@
-apiVersion: apps/v1
+---
+apiVersion: v1
 kind: Deployment
 metadata:
-  name: persistent-storage
+  name: mypod
   namespace: practica-k8s
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: persistent-storage
+      app: nginx-storage
   template:
     metadata:
       labels:
-        app: persistent-storage
+        app: nginx-storage
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
       volumes:
-        - name: example-pv-storage
+        - name: pv-nginx
           persistentVolumeClaim:
-            claimName: pvc-managed-csi
+            claimName: pvc-nginx  
       containers:
-      - name: persistent-storage
-        image: cassandra
+      - name: pv-nginx-container
+        image: practica2acr.azurecr.io/nginx:casopractico2
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
         resources:
           requests:
             cpu: 100m
@@ -31,35 +35,33 @@ spec:
             memory: 256Mi
         ports:
         - containerPort: 80
-          name: "cassandra"
+          name: nginx-port
         volumeMounts:
-          - mountPath: "/usr/share/cassandra"
-            name: example-pv-storage
+          - mountPath: "/usr/share/nginx/html"
+            name: pv-nginx
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: persistent-storage
+  name: pv-nginx
   namespace: practica-k8s
 spec:
   type: LoadBalancer
-  persistentVolumeReclaimPolicy: Retain
   ports:
   - port: 80
   selector:
-    app: persistent-storage
+    app: nginx-storage
+  persistentVolumeReclaimPolicy: Retain
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-azurefile-csi
+  name: pvc-nginx
   namespace: practica-k8s
 spec:
-  storageClassName: azurefile-csi
+  storageClassName: managed-csi
   resources:
     requests:
       storage: 1Gi
   accessModes:
     - ReadWriteOnce
-
-

@@ -8,7 +8,7 @@
     - vars/outputs.json
   tasks:
 
-    - name: Build a basic OCI image
+    - name: Build a basic image
       containers.podman.podman_image:
         name: "{{podman_name}}"
         path: "{{path}}"

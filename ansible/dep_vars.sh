@@ -16,10 +16,7 @@ echo "$clean_ip" > hosts
 
 cat <<EOF > inventory
 [webservers]
-$clean_ip nombre_dominio=webserver.example.com ip_interna=10.0.2.4
-
-[databases]
-$clean_ip nombre_dominio=database.example.com ip_interna=10.0.2.5
+$clean_ip 
 
 [terraform_host]
 localhost ansible_connection=local
