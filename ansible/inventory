@@ -1,5 +1,5 @@
 [webservers]
-20.90.107.110 
+20.0.229.125 
 
 [terraform_host]
 localhost ansible_connection=local

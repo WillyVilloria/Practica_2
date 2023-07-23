@@ -16,7 +16,7 @@ Creo infraestructura con terraform.
         - plan.
         - source image reference.
         - grupo de network security (ngs1).
-        - Permito rango de puertos http 8080-8090 para poder tener más de un puerto de acceso.
+        - Permito rango de puertos http 8080-8090 para poder tener más de un puerto de acceso.ansible
         - azurerm_subnet_network_security_group_association (ngs-link)
     - archivo imput-vars.tf --> archivo de variables con los nombres y datos necesarios para crear los recursos nombrados en los archivos anteriores.
     - archivo outputs.tf --> archivo con las varibles de salida. 
