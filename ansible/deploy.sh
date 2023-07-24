@@ -2,7 +2,7 @@
 echo "Archivos despliegue de ansible"
 
 cd ../terraform
-/home/miguel/Documentos/Proyectos/Practica_2/terraform/terra.sh
+./terra.sh
 
 cd ../ansible
 ansible-playbook -i inventory playbook_obtenerlogs.yaml
